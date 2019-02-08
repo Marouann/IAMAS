@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from collections import deque
 from time import perf_counter
+from sortedcontainers import SortedDict
 
 import memory
 
@@ -104,23 +105,33 @@ class StrategyBestFirst(Strategy):
     def __init__(self, heuristic: 'Heuristic'):
         super().__init__()
         self.heuristic = heuristic
-        raise NotImplementedError
-    
+        self.frontier = SortedDict()
+        self.frontier_set = set()
+
     def get_and_remove_leaf(self) -> 'State':
-        raise NotImplementedError
-    
+        (key, value) = self.frontier.popitem(0)
+        leaf = value.pop()
+        if value != []:
+            self.frontier[key] = value
+        self.frontier_set.remove(leaf)
+        return leaf
+
     def add_to_frontier(self, state: 'State'):
-        raise NotImplementedError
-    
+        heur_eval = self.heuristic.f(state)
+        value = self.frontier.setdefault(heur_eval, [])
+        value.append(state)
+        self.frontier[heur_eval] = value
+        self.frontier_set.add(state)
+
     def in_frontier(self, state: 'State') -> 'bool':
-        raise NotImplementedError
-    
+        return state in self.frontier_set
+
     def frontier_count(self) -> 'int':
-        raise NotImplementedError
-    
+        return len(self.frontier)
+
     def frontier_empty(self) -> 'bool':
-        raise NotImplementedError
-    
+        return len(self.frontier) == 0
+
+
     def __repr__(self):
         return 'Best-first Search using {}'.format(self.heuristic)
-
