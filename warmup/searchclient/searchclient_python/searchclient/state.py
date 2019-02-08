@@ -5,8 +5,8 @@ from action import ALL_ACTIONS, ActionType
 
 class State:
     _RNG = random.Random(1)
-    # MAX_ROW = 70
-    # MAX_COL = 70
+    MAX_ROW = 70
+    MAX_COL = 70
     
     def __init__(self, copy: 'State' = None):
         '''
@@ -29,14 +29,10 @@ class State:
         if copy is None:
             self.agent_row = None
             self.agent_col = None
-
-            # self.walls = [[False for _ in range(State.MAX_COL)] for _ in range(State.MAX_ROW)]
-            # self.boxes = [[None for _ in range(State.MAX_COL)] for _ in range(State.MAX_ROW)]
-            # self.goals = [[None for _ in range(State.MAX_COL)] for _ in range(State.MAX_ROW)]
-
-            self.walls = []
-            self.boxes = []
-            self.goals = []
+            
+            self.walls = [[False for _ in range(State.MAX_COL)] for _ in range(State.MAX_ROW)]
+            self.boxes = [[None for _ in range(State.MAX_COL)] for _ in range(State.MAX_ROW)]
+            self.goals = [[None for _ in range(State.MAX_COL)] for _ in range(State.MAX_ROW)]
             
             self.parent = None
             self.action = None
@@ -46,9 +42,9 @@ class State:
             self.agent_row = copy.agent_row
             self.agent_col = copy.agent_col
             
-            self.walls = copy.walls
+            self.walls = [row[:] for row in copy.walls]
             self.boxes = [row[:] for row in copy.boxes]
-            self.goals = copy.goals
+            self.goals = [row[:] for row in copy.goals]
             
             self.parent = copy.parent
             self.action = copy.action
@@ -111,8 +107,8 @@ class State:
         return self.parent is None
     
     def is_goal_state(self) -> 'bool':
-        for row in range(len(self.walls)):
-            for col in range(len(self.walls[0])):
+        for row in range(State.MAX_ROW):
+            for col in range(State.MAX_COL):
                 goal = self.goals[row][col]
                 box = self.boxes[row][col]
                 if goal is not None and (box is None or goal != box.lower()):
@@ -158,9 +154,9 @@ class State:
     
     def __repr__(self):
         lines = []
-        for row in range(len(self.walls)):
+        for row in range(State.MAX_ROW):
             line = []
-            for col in range(len(self.walls[0])):
+            for col in range(State.MAX_COL):
                 if self.boxes[row][col] is not None: line.append(self.boxes[row][col])
                 elif self.goals[row][col] is not None: line.append(self.goals[row][col])
                 elif self.walls[row][col] is not None: line.append('+')
