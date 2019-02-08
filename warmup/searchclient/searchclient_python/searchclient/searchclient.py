@@ -24,6 +24,9 @@ class SearchClient:
             self.initial_state = State()
             row = 0
             while line:
+                self.initial_state.walls.append([False for _ in range(len(line))])
+                self.initial_state.boxes.append([None for _ in range(len(line))])
+                self.initial_state.goals.append([None for _ in range(len(line))])
                 for col, char in enumerate(line):
                     if char == '+': self.initial_state.walls[row][col] = True
                     elif char in "0123456789":
@@ -84,7 +87,7 @@ def main(strategy_str: 'str'):
     print('SearchClient initializing. I am sending this using the error output stream.', file=sys.stderr, flush=True)
     
     # Read level and create the initial state of the problem.
-    client = SearchClient(server_messages);
+    client = SearchClient(server_messages)
     
     # Default to BFS strategy.
     if not strategy_str:
@@ -137,7 +140,7 @@ if __name__ == '__main__':
     
     # Set max memory usage allowed (soft limit).
     memory.max_usage = args.max_memory
-    
+
     # Run client.
     main(args.strategy.lower())
 
