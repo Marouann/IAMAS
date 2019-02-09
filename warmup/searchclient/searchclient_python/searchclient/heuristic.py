@@ -14,7 +14,7 @@ class Heuristic(metaclass=ABCMeta):
                 if initial_state.goals[row][col]:
                     if not initial_state.goals[row][col] in self.goals_list:
                         self.goals_list[initial_state.goals[row][col]] = []
-                    self.goals_list[initial_state.goals[row][col]].append((row,col, self.nb_goals * 200))
+                    self.goals_list[initial_state.goals[row][col]].append((row,col, self.nb_goals * 1000))
                     self.nb_goals += 1
                 # if initial_state.boxes[row][col]:
                 #     if self.boxes_list[initial_state.boxes[row][col]] == None:
@@ -31,7 +31,9 @@ class Heuristic(metaclass=ABCMeta):
         def subH(agent, goal, box):
             if man_dist(box, goal) == 0:
                 return 0
-            return man_dist(box, goal) + man_dist(agent, box) + goal[2]
+            # if man_dist(agent, box)==1:
+            #     man_dist(box, goal) + goal[2]
+            return 5 * man_dist(box, goal)+ man_dist(agent, box) + goal[2]
 
         # file = open("log.txt", 'w')
         for row in range(len(state.goals)):

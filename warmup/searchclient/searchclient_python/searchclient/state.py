@@ -109,7 +109,7 @@ class State:
 
     def is_goal_state(self) -> 'bool':
         for row in range(len(self.walls)):
-            for col in range(len(self.walls[0])):
+            for col in range(len(self.walls[row])):
                 goal = self.goals[row][col]
                 box = self.boxes[row][col]
                 if goal is not None and (box is None or goal != box.lower()):
