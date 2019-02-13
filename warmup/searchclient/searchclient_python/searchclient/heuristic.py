@@ -5,6 +5,8 @@ man_dist = lambda a,b : abs(a[0]-b[0]) + abs(a[1]-b[1])
 def subH(agent, box, goal):
     if man_dist(box, goal) == 0:
         return 0
+    if man_dist(box, agent) == 1:
+        return goal[2] + man_dist(box, goal)
     return man_dist(box, goal) + man_dist(agent, box) + goal[2]
 
 class Heuristic(metaclass=ABCMeta):
@@ -18,7 +20,7 @@ class Heuristic(metaclass=ABCMeta):
                 if initial_state.goals[row][col]:
                     if not initial_state.goals[row][col] in self.goals_list:
                         self.goals_list[initial_state.goals[row][col]] = []
-                    self.goals_list[initial_state.goals[row][col]].append((row,col,self.count_goals * 140))
+                    self.goals_list[initial_state.goals[row][col]].append((row,col,(70 - self.count_goals) * 140))
                     self.count_goals += 1
 
     def h(self, state: 'State') -> 'int':
